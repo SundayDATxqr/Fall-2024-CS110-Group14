@@ -1,0 +1,111 @@
+import java.io.*;
+//Matrix保存大小为10的棋盘
+//step保存每一步的棋
+//需要输入棋盘的二位数组，这步棋的纵坐标，横坐标，第几次存档，方法名字为save1
+public class save {
+    int[][] Matrix = new int[10][10];
+    int[][] step = new int[1][2];
+    private void save1(int[][]Matrix1, int row2, int col2,int n) {
+
+        int m = n;
+        for (int row3 = 0; row3 < 10; row3++) {
+            for (int col3 = 0; col3 < 10; col3++) {
+                Matrix[row3][col3] = Matrix1[row3][col3];
+            }
+        }
+        int x = row2;
+        int y = col2;
+        // 创建一个File对象，指向要操作的文件
+        String filename = "save" + m + ".txt";
+        File file = new File(filename);
+
+        // 检查文件是否存在，如果不存在则创建它
+        if (!file.exists()) {
+            try {
+                boolean success = file.createNewFile();
+                if (success) {
+                    System.out.println("文件创建成功: " + file.getName());
+                } else {
+                    System.out.println("文件创建失败.");
+                }
+            } catch (IOException e) {
+                System.out.println("文件创建时发生错误: " + e.getMessage());
+            }
+        } else {
+            System.out.println("文件已存在: " + file.getName());
+        }
+
+//保存
+        String filePath = filename;
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            for (int row3 = 0; row3 < 10; row3++) {
+                for (int col3 = 0; col3 < 10; col3++) {
+                    writer.write(Integer.toString(Matrix[row3][col3]));
+                }
+                writer.newLine();
+
+            }
+            writer.write(Integer.toString(x));
+            writer.write(Integer.toString(y));
+            writer.write(" ");
+
+        } catch (IOException e) {
+            System.out.println("写入文件时发生错误: " + e.getMessage());
+        }
+    }
+
+        // 读取
+    private   void read(int n){
+        int m=n;
+        String filename = "save" + m + ".txt";
+        String filePath = filename;
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            int row3=0;
+            while ((line = reader.readLine()) != null) {
+                while (row3<10){
+                    char[]T=new char[10];
+                    line.getChars(0, 10, T, 0);
+                  for (int col3=0;col3<10;col3++){
+                    Matrix[row3][col3]=Integer.parseInt(String.valueOf(T[col3]));
+                    System.out.printf("%d",Matrix[row3][col3]);}
+                    row3=row3+1;
+                }
+                if (row3==10){
+                    char[]T=new char[2];
+                    line.getChars(0, 2, T, 0);
+                    for (int col3=0;col3<2;col3++){
+                        step[0][col3]=Integer.parseInt(String.valueOf(T[col3]));
+                        System.out.printf("%d",step[0][col3]);
+                    }
+
+                }
+
+
+            }
+        } catch (IOException e) {
+            System.out.println("读取文件时发生错误: " + e.getMessage());
+        }
+
+    }
+//测试
+    public static void main(String[] args) {
+
+        int[][] Matrix2 = new int[10][10];
+        int x1=0;
+        int y1=0;
+        save s=new save();
+        for (int row3=0;row3<10;row3++) {
+            for (int col3 = 0; col3 < 10; col3++){
+                Matrix2[row3][col3]=1;
+            }
+        }
+        s.save1(Matrix2,x1,y1,1);
+        s.read(1);
+    }
+}
+
+
+
+
+
