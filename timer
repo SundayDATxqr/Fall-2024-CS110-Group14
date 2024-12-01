@@ -1,0 +1,63 @@
+package org.Othello.GUI;
+
+import sun.security.mscapi.CPublicKey;
+//在走棋的时候用timer方法，在里面输入玩家的编号，就可以显示下棋花了多少时间
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+public class timer extends JFrame implements ActionListener {
+    private JLabel timeLabel;
+    private int seconds1 = 0;
+    private int seconds2 = 0;
+    private Timer timer;
+    private int m=1;
+
+    public timer(int n) {
+        int m=n;
+        setTitle("Timer");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        if (m==1){
+        setSize(300, 400);}
+        if (m==2){
+            setSize(150, 150);}
+        setLocationRelativeTo(null);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new FlowLayout());
+
+
+        timeLabel = new JLabel("Time: 00", SwingConstants.CENTER);
+        timeLabel.setFont(new Font("Serif", Font.BOLD, 24));
+        panel.add(timeLabel);
+
+
+        add(panel);
+
+
+        timer = new Timer(1000, this);
+        timer.start();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+       if (m==1){
+        seconds1++;
+        timeLabel.setText("Time: " + String.format("%02d", seconds1));}
+        if (m==2){
+            seconds2++;
+            timeLabel.setText("Time: " + String.format("%02d", seconds2));}
+
+    }
+
+//测试
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new timer(1).setVisible(true);
+                new timer(2).setVisible(true);
+            }
+        });
+    }
+}
