@@ -1,0 +1,144 @@
+import jdk.nashorn.internal.objects.annotations.Optimistic;
+import javax.swing.*;
+import java.io.*;
+//Matrix保存大小为10的棋盘
+//step保存每一步的棋
+//需要输入棋盘的三位数组，这步棋的二维数组，第几次存档，方法名字为save1
+//读取时只要用fileChooserTest(fileChooser());和 s.read(n);这两个方法即可
+public class save {
+    int[][][] Matrix = new int[61][10][10];
+    int[][][] Matrix3 = new int[61][10][10];
+    int[][] step = new int[61][2];
+    static int n;
+    private void save1(int[][][]Matrix1, int[][]everystep,int n,int x) {
+        int m = n;
+        for (int m1 = 0; m1 < m; m1++) {
+            for (int row3 = 0; row3 < 10; row3++) {
+                for (int col3 = 0; col3 < 10; col3++) {
+                    Matrix[m1][row3][col3] = Matrix1[m1][row3][col3];
+                }
+            }
+        }
+        for (int row3 = 0; row3 < n; row3++) {
+            for (int col3 = 0; col3 < 2; col3++) {
+                step[row3][col3] = everystep[row3][col3];
+            }
+        }
+        String filename = "save" + x + ".txt";
+        File file = new File(filename);
+        if (!file.exists()) {
+            try {
+                boolean success = file.createNewFile();
+                if (success) {
+                    System.out.println("文件创建成功: " + file.getName());
+                } else {
+                    System.out.println("文件创建失败.");
+                }
+            } catch (IOException e) {
+                System.out.println("文件创建时发生错误: " + e.getMessage());
+            }
+        } else {
+            System.out.println("文件已存在: " + file.getName());
+        }
+
+//保存
+        String filePath = filename;
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            for (int m1 = 0; m1 < n; m1++) {
+                for (int row3 = 0; row3 < 10; row3++) {
+                    for (int col3 = 0; col3 < 10; col3++) {
+                        writer.write(Integer.toString(Matrix[m1][row3][col3]));
+                    }
+                    writer.newLine();
+                }
+                writer.write(Integer.toString(everystep[m1][0]));
+                writer.write(Integer.toString(everystep[m1][1]));
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("写入文件时发生错误: " + e.getMessage());
+        }
+    }
+
+        // 读取
+    private   void read(int n){
+        int m=n;
+        String filename = "save" + m + ".txt";
+        String filePath = filename;
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            int row3=0;
+            while ((line = reader.readLine()) != null) {
+                for (int m1 = 0; m1 < m; m1++) {
+                    row3=0;
+                while (row3<10){
+                    char[]T=new char[10];
+                    line.getChars(0, 10, T, 0);
+                  for (int col3=0;col3<10;col3++){
+                    Matrix3[m1][row3][col3]=Integer.parseInt(String.valueOf(T[col3]));
+                    System.out.printf("%d",Matrix3[m1][row3][col3]);}
+                    row3=row3+1;
+                }
+                if (row3==10){
+                    while ((line = reader.readLine()) != null) {
+                    char[]T=new char[2];
+                    line.getChars(0, 2, T, 0);
+                    for (int col3=0;col3<2;col3++){
+                        step[m1][col3]=Integer.parseInt(String.valueOf(T[col3]));
+                        System.out.printf("%d",step[m1][col3]);
+                    }
+                 }}
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("读取文件时发生错误: " + e.getMessage());
+        }
+
+    }
+    public static File fileChooser() {
+        JFileChooser jf = new JFileChooser(".");
+        jf.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        jf.showOpenDialog(null);
+        return jf.getSelectedFile();
+    }
+    public static void fileChooserTest(File file) {
+        if (file == null) {
+            JOptionPane.showMessageDialog(null, "你已取消选择");
+            System.exit(0);
+        } else {
+            char[]T=new char[5];
+            String D=file.getName();
+            D.getChars(0, 5, T, 0);
+            n=Integer.parseInt(String.valueOf(T[4]));
+            try (FileInputStream fileInputStream = new FileInputStream(file);
+                 InputStream stream = new BufferedInputStream(fileInputStream, 10240);) {
+                byte[] b = new byte[(int) file.length()];
+                stream.read(b);
+                System.out.println(new String(b));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+//测试
+    public static void main(String[] args) throws Exception {
+        int[][][] Matrix2 = new int[1][10][10];
+        int[][] step2=new int[1][2];
+        step2[0][1]=2;
+        step2[0][0]=2;
+        save s=new save();
+        for (int row3=0;row3<10;row3++) {
+            for (int col3 = 0; col3 < 10; col3++){
+                Matrix2[0][row3][col3]=1;
+            }
+        }
+        s.save1(Matrix2,step2,1,1);
+        fileChooserTest(fileChooser());
+        s.read(n);
+    }
+}
+
+
+
+
+
