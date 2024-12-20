@@ -53,6 +53,18 @@ class BoardSetUp extends JFrame{
         //popupWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         popupWindow.setSize(400,300);
     }
+    public int AIwinnerJudge(){
+        int ChessCount = 0;
+        for(int i = 1 ; i <= 8 ; i++){
+            for(int j = 1 ; j <= 8 ; j++){
+                if(Matrix[i][j] == 1)ChessCount ++;
+                else if(Matrix[i][j] == 2)ChessCount --;
+            }
+        }
+        if(ChessCount > 0)return 1;
+        else if(ChessCount < 0)return 2;
+        else return 0;//draw
+    }
     public void GameTermination(){
         String win;
         if(winner == 1 || White > Black)win = "白棋胜利！";
