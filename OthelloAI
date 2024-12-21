@@ -1,0 +1,85 @@
+package org.Othello.Game;
+
+
+import javax.swing.*;
+import java.awt.*;
+
+public class OthelloAI {
+    private static final int PLAYER1 = 1;
+    private static final int PLAYER2 = -1;
+
+    public int minimax(BoardSetUp board, int player, int alpha, int beta, boolean isMaximizing) {
+        if (board.GameEnd==1) {
+            return board.getScore(player);
+        }
+
+        if (isMaximizing) {
+            int bestScore = Integer.MIN_VALUE;
+            for (int[] move : board.getPossibleMoves(player)) {
+                BoardSetUp newBoard = board;
+                newBoard.takeBackMoveRecord(move[0], move[1], player);
+                int score = minimax(newBoard, -player, alpha, beta, false);
+                bestScore = Math.max(bestScore, score);
+                alpha = Math.max(alpha, bestScore);
+                if (beta <= alpha) {
+                    break; // Beta剪枝
+                }
+            }
+            return bestScore;
+        } else {
+            int bestScore = Integer.MAX_VALUE;
+            for (int[] move : board.getPossibleMoves(-player)) {
+                BoardSetUp newBoard = board;
+                newBoard.takeBackMoveRecord(move[0], move[1], -player);
+                int score = minimax(newBoard, player, alpha, beta, true);
+                bestScore = Math.min(bestScore, score);
+                beta = Math.min(beta, bestScore);
+                if (beta <= alpha) {
+                    break; // Alpha剪枝
+                }
+            }
+            return bestScore;
+        }
+    }
+
+    public int[] getBestMove(BoardSetUp board, int player) {
+        int bestScore = Integer.MIN_VALUE;
+        int[] bestMove = null;
+
+        for (int[] move : board.getPossibleMoves(player)) {
+            BoardSetUp newBoard = board;
+            newBoard.takeBackMoveRecord(move[0], move[1], player);
+            int score = minimax(newBoard, -player, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = move;
+            }
+        }
+
+        return bestMove;
+    }
+    public static void main(String[] args) {
+        BoardSetUp board = new BoardSetUp();
+        board.setSize(1400,990);
+        board.setLayout(new GridLayout(10,15));
+        board.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        board.SetUp(board);
+        OthelloAI ai = new OthelloAI();
+        int currentPlayer = OthelloAI.PLAYER1;
+
+        while (board.GameEnd != 1) {
+            if (currentPlayer == OthelloAI.PLAYER1) {
+
+                int[] humanMove =new int[2];
+                        board.takeBackMoveRecord(humanMove[0], humanMove[1], OthelloAI.PLAYER1);
+            } else {
+
+                int[] aiMove = ai.getBestMove(board, OthelloAI.PLAYER2);
+                board.takeBackMoveRecord(aiMove[0], aiMove[1], OthelloAI.PLAYER2);
+            }
+            currentPlayer = -currentPlayer;
+        }
+
+    }}
+
